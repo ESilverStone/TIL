@@ -178,7 +178,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 <context:component-scan base-package="com.ssafy.mvc.controller" />
 	
 	<beans:bean class="com.ssafy.mvc.interceptor.LoginInterceptor" id="confirm"></beans:bean>
-	
+
 <interceptors>
 	<interceptor>
 		<mapping path="/*"/>
