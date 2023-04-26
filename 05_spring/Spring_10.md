@@ -171,3 +171,85 @@ public class TestController4 {
 
 
 Talend API Tester에서 테스트 가능
+
+
+
+
+
+### 실습
+
+:page_facing_up: **UserRestController**
+
+```java
+@RestController
+@RequestMapping("/userapi")
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST })
+public class UserRestController {
+
+	@Autowired
+	UserService us;
+
+	@GetMapping("/user")
+	@ApiOperation(value = "등록된 모든 사용자 정보를 반환한다.", response = User.class)
+	public ResponseEntity<?> selectAll() {
+		try {
+			List<User> users = us.selectAll();
+			if (users.isEmpty()) {
+				return ResponseEntity.noContent().build();
+			} else {
+				return ResponseEntity.ok(users);
+			}
+		} catch (Exception e) {
+			return exceptionHandling(e);
+		}
+	}
+
+	@GetMapping("/user/{id}")
+	@ApiOperation(value = "{id}에 해당하는 사용자 정보를 반환한다.", response = User.class)
+	public ResponseEntity<?> select(@PathVariable String id) {
+		try {
+			User user = us.searchById(id);
+			if (user.getId() == null) {
+				return ResponseEntity.noContent().build();
+			} else {
+				return ResponseEntity.ok(user);
+			}
+		} catch (Exception e) {
+			return exceptionHandling(e);
+		}
+	}
+
+	@GetMapping("/user/search")
+	@ApiOperation(value = "SearchCondition 에 부합하는 조건을 가진 사용자 목록을 반환한다.", response = User.class)
+	public ResponseEntity<?> search(SearchCondition con) {
+		try {
+			List<User> users = us.searchByCondition(con);
+			if (users.isEmpty()) {
+				return ResponseEntity.noContent().build();
+			} else {
+				return ResponseEntity.ok(users);
+			}
+		} catch (Exception e) {
+			return exceptionHandling(e);
+		}
+	}
+
+	@PostMapping("/user")
+	@ApiOperation(value = "사용자 정보를 삽입한다.", response = Integer.class)
+	public ResponseEntity<?> insert(User user) {
+		try {
+			int result = us.insert(user);
+			return ResponseEntity.ok(result);
+
+		} catch (Exception e) {
+			return exceptionHandling(e);
+		}
+	}
+
+	private ResponseEntity<String> exceptionHandling(Exception e) {
+		e.printStackTrace();
+		return new ResponseEntity<String>("Sorry: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+}
+```
+
